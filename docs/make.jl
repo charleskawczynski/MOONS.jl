@@ -1,4 +1,6 @@
 using Documenter, MOONS
+# https://github.com/jheinen/GR.jl/issues/278#issuecomment-587090846
+ENV["GKSwstype"] = "nul"
 
 mathengine = MathJax(Dict(
     :TeX => Dict(
