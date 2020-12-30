@@ -68,6 +68,6 @@ end
     β = FT(1.1)
     c = Coordinates(a,b,n; warpfun=Roberts_both, args=(β,))
     β = G.β_Δh_small(a, b, n, c.n.Δh[1])
-    @test β ≈ 1.1036840247433173
+    @test β ≈ 1.1036862256343674
   end
 end
