@@ -1,7 +1,7 @@
 status = [
-  "test (1.5.2, ubuntu-latest, x64)",
-  "test (1.5.2, windows-latest, x64)",
-  "test (1.5.2, macOS-latest, x64)",
+  "ci 1.5.2 - ubuntu-latest",
+  "ci 1.5.2 - windows-latest",
+  "ci 1.5.2 - macOS-latest",
 ]
 delete_merged_branches = true
 timeout_sec = 10800
