@@ -19,7 +19,8 @@ function β_Δh_small(hmin::FT, hmax::FT, N::IT, Δh::FT) where {FT, IT}
   tol = eps(FT)
   β_initial = FT(1) + tol # Initial guess
   root_closure(β) = T2_root_Δh_near_hmax(β, hmin, hmax, FT(0), N, Δh)
-  sol = find_zero(β -> root_closure(β), NewtonsMethodAD(β_initial), CompactSolution())
+  args = (NewtonsMethodAD(β_initial), CompactSolution(), SolutionTolerance(eps(FT)))
+  sol = find_zero(β -> root_closure(β), args...)
   return sol.root
 end
 
@@ -27,7 +28,8 @@ function β_Δh_big(hmin::FT, hmax::FT, N::IT, Δh::FT) where {FT, IT}
   tol = eps(FT)
   β_initial = FT(1) + tol # Initial guess
   root_closure(β) = T2_root_Δh_near_hmin(β, hmin, hmax, FT(0), N, Δh)
-  sol = find_zero(β -> root_closure(β), NewtonsMethodAD(β_initial), CompactSolution())
+  args = (NewtonsMethodAD(β_initial), CompactSolution(), SolutionTolerance(eps(FT)))
+  sol = find_zero(β -> root_closure(β), args...)
   return sol.root
 end
 
@@ -35,6 +37,7 @@ function β_Δh_both(hmin::FT, hmax::FT, N::IT, Δh::FT) where {FT, IT}
   tol = eps(FT)
   β_initial = FT(1) + tol # Initial guess
   root_closure(β) = T2_root_Δh_near_hmax(β, hmin, hmax, FT(1/2), N, Δh)
-  sol = find_zero(β -> root_closure(β), NewtonsMethodAD(β_initial), CompactSolution())
+  args = (NewtonsMethodAD(β_initial), CompactSolution(), SolutionTolerance(eps(FT)))
+  sol = find_zero(β -> root_closure(β), args...)
   return sol.root
 end

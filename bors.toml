@@ -1,0 +1,9 @@
+status = [
+  "test (1.5.2, ubuntu-latest, x64)",
+  "test (1.5.2, windows-latest, x64)",
+  "test (1.5.2, macOS-latest, x64)",
+]
+delete_merged_branches = true
+timeout_sec = 10800
+block_labels = [ "do-not-merge-yet" ]
+cut_body_after = "<!--"
