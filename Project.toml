@@ -1,0 +1,11 @@
+name = "MOONS"
+uuid = "d8e8e26a-7208-48f2-980c-13e60723422e"
+authors = ["Charles Kawczynski <kawczynski.charles@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+RootSolvers = "7181ea78-2dcb-4de3-ab41-2b8ab5a31e74"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
