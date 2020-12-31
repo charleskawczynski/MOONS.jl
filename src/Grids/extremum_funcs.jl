@@ -8,7 +8,7 @@ abstract type Extremum end
 """
     Min
 
-A type for dispatching on the minmimum of
+A type for dispatching on the minimum of
 the domain along a particular direction
 """
 struct Min <: Extremum end
