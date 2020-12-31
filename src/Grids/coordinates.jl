@@ -49,11 +49,14 @@ end
 coords(c::Coordinates, ::Center1D) = c.c
 coords(c::Coordinates, ::Vertex1D) = c.n
 
+Base.length(c::Coordinates, ::Center1D) = c.c.s
+Base.length(c::Coordinates, ::Vertex1D) = c.n.s
+
 include("extremum_funcs.jl")
 
 abstract type BoundaryPoints end
 
-""" Cell center boundary type, containing ghost and first interior indicies """
+""" Cell center boundary type, containing ghost and first interior indices """
 struct CellBoundary{IT<:Integer} <: BoundaryPoints
   "ghost index"
   g::IT
@@ -61,7 +64,7 @@ struct CellBoundary{IT<:Integer} <: BoundaryPoints
   i::IT
 end
 
-""" Node boundary type, containing ghost, boundary, and first interior indicies """
+""" Node boundary type, containing ghost, boundary, and first interior indices """
 struct NodeBoundary{IT<:Integer} <: BoundaryPoints
   "ghost index"
   g::IT

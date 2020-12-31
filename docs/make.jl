@@ -25,7 +25,10 @@ makedocs(
     modules = [MOONS],
     pages = Any[
         "Home" => "index.md",
-        "Grids" => "grids.md",
+        "DevDocs" => [
+            "Grids" => "DevDocs/Grids.md",
+            "Fields" => "DevDocs/Fields.md",
+        ],
         "API" => "api.md",
     ],
 )

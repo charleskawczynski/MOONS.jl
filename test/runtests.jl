@@ -2,6 +2,7 @@ using Test
 
 for submodule in [
                   "Grids",
+                  "Fields",
                  ]
 
   println("Testing $submodule")

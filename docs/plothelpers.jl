@@ -1,3 +1,5 @@
+using MOONS.Grids
+using MOONS.Fields
 using Plots
 
 abstract type AbstractGridPlot end
@@ -32,3 +34,10 @@ function plot_func(f::F,
     viz_type(X,Y,data)
     savefig(filename)
 end
+
+# import Plots: plot
+
+# function plot(grid::Grid, f::AbstractField)
+#     plot()
+# end
+
