@@ -19,7 +19,7 @@ A [Magneto-hydro-dynamics](https://en.wikipedia.org/wiki/Magnetohydrodynamics) O
 [gha-ci-img]: https://github.com/charleskawczynski/MOONS.jl/workflows/ci/badge.svg
 [gha-ci-url]: https://github.com/charleskawczynski/MOONS.jl/actions?query=workflow%3Aci
 
-[codecov-img]: https://codecov.io/gh/charleskawczynski/MOONS.jl/branch/master/graph/badge.svg
+[codecov-img]: https://codecov.io/gh/charleskawczynski/MOONS.jl/branch/main/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/charleskawczynski/MOONS.jl
 
 [bors-img]: https://bors.tech/images/badge_small.svg
