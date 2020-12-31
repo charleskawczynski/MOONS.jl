@@ -100,3 +100,19 @@ end
     @test β ≈ 1.1036862256343674
   end
 end
+
+@testset "Field-like indexing" begin
+    FT = Float64
+    a = FT(0.0)
+    b = FT(1.0)
+    n = 10
+    β = FT(1.1)
+    grid = Cube(a,b,n)
+    @test all(grid.c[1].c.h .≈ [grid.cent.x[i,1,1] for i in 1:grid.c[1].c.s])
+    @test all(grid.c[2].c.h .≈ [grid.cent.y[1,j,1] for j in 1:grid.c[2].c.s])
+    @test all(grid.c[3].c.h .≈ [grid.cent.z[1,1,k] for k in 1:grid.c[3].c.s])
+
+    @test all(grid.c[1].n.h .≈ [grid.corn.x[i,1,1] for i in 1:grid.c[1].n.s])
+    @test all(grid.c[2].n.h .≈ [grid.corn.y[1,j,1] for j in 1:grid.c[2].n.s])
+    @test all(grid.c[3].n.h .≈ [grid.corn.z[1,1,k] for k in 1:grid.c[3].n.s])
+end
