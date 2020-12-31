@@ -111,7 +111,7 @@ space(grid::Grid, ::Center1D) = grid.cent
 space(grid::Grid, ::Vertex1D) = grid.corn
 
 function Base.iterate(gf::GridField{G,F}, state=1) where {G,F<:AbstractField}
-    if state > length(gf.f)
+    if state > length(gf)
         return nothing
     else
         ijk = gf.ci[state]

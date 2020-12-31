@@ -29,6 +29,9 @@ end
     @test binary(Max()) == 1
     @test ghost_vec(Max()) == (0, 0, 1)
     @test ghost_dual(Max()) == (0, 1)
+    @test orthogs(1) == (2, 3)
+    @test orthogs(2) == (3, 1)
+    @test orthogs(3) == (1, 2)
 end
 
 @testset "Stretch funcs" begin
@@ -77,6 +80,11 @@ end
     grid = Grid((c1,c2,c3))
     sprint(show, grid)
     # FT==Float64 && @show grid
+
+    # Test failures
+    if FT === Float32
+        @test_throws ArgumentError("Coordinates are not finite.") Coordinates(a,b,n; warpfun=Roberts_left, args=(FT(1.000000000000001),))
+    end
 
     @test over_points(c1, All(), Vertex1D()) == 1:13
     @test over_points(c1, Interior(), Vertex1D()) == 3:11

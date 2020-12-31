@@ -1,7 +1,7 @@
 module Grids
 
 using DocStringExtensions
-export Grid, Cube, SquarePlane
+export Grid, Cube
 
 include("directional_funcs.jl")
 include("stretch_funcs.jl")
@@ -59,12 +59,6 @@ Base.@propagate_inbounds Base.getindex(c::Space1D{ZDim}, i,j,k) = Base.getindex(
 function Cube(a::FT, b::FT, n::Int; kwargs...) where {FT}
     c = Coordinates(a,b,n; kwargs...)
     return Grid((c,c,c))
-end
-
-function SquarePlane(a::FT, b::FT, n::Int; kwargs...) where {FT}
-    c_plane = Coordinates(FT(-0.5),FT(0.5),1)
-    c = Coordinates(a,b,n; kwargs...)
-    return Grid((c,c,c_plane))
 end
 
 function Base.size(grid::Grid, t::Tuple)
