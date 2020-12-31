@@ -1,6 +1,5 @@
 
 export uniform,
-       linspace,
        uniform_left,
        uniform_right,
        Roberts_left,
@@ -24,7 +23,7 @@ function assert_monotonically_increasing!(h::VFT, hmin::FT, hmax::FT, β::FT, ca
       println("hmin, hmax, β = ", hmin, hmax, β)
       println("R = ", R)
       println("h = ", h)
-      throw(MethodError("coordinates not monotonically increasing"))
+      throw(ArgumentError("coordinates not monotonically increasing"))
     end
   end
 end
@@ -35,11 +34,11 @@ function insist_monotonically_decreasing!(h::VFT, hmin::FT, hmax::FT, β::FT, ca
     R = (h[i+2]-h[i+1])/(h[i+1]-h[i])
     if R > FT(1)
      println("Error: coordinates not monotonically decreasing in ", caller)
-     println("in coordinate_distribution_funcs.jl")
+     println("in stretch_funcs.jl")
      println("hmin, hmax, β = ", hmin, hmax, β)
      println("R = ", R)
      println("h = ", h)
-     throw(MethodError("coordinates not monotonically increasing"))
+     throw(ArgumentError("coordinates not monotonically increasing"))
     end
   end
 end
@@ -185,7 +184,6 @@ uniform_left(hstart::FT, Δh::FT, N::IT) where {FT, IT} = uniform_direction(hsta
 uniform_right(hstart::FT, Δh::FT, N::IT) where {FT, IT} = uniform_direction(hstart, Δh, N, IT( 1))
 
 uniform(hmin::FT, hmax::FT, N::IT) where {FT, IT} = [hmin+FT(i-1)*(hmax - hmin)/FT(N) for i in 1:N+1]
-linspace(hmin::FT, hmax::FT, N::IT) where {FT, IT} = [hmin+FT(i-1)*(hmax - hmin)/FT(N) for i in 1:N+1]
 Roberts_left(hmin::FT, hmax::FT, N::IT, β::FT) where {FT, IT} = transformation1(hmin, hmax, N, β)
 Roberts_right(hmin::FT, hmax::FT, N::IT, β::FT) where {FT, IT} = transformation2(hmin, hmax, N, FT(0), β)
 Roberts_both(hmin::FT, hmax::FT, N::IT, β::FT) where {FT, IT} = transformation2(hmin, hmax, N, FT(1/2), β)

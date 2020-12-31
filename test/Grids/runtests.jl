@@ -35,12 +35,22 @@ end
     FT = Float64
     Re = FT(100)
     Ha = FT(200)
+    hmin = FT(0)
+    hmax = FT(1)
+    δ = hmax*99/100
     @test all(G.ReynoldsBL(Re, FT[0, 0, 0], FT[1, 1, 1]) .≈ [1.0540925533894598, 1.0540925533894598, 1.0540925533894598])
     @test all(G.Re_Ha_BL(Re, Ha, FT[0, 0, 0], FT[1, 1, 1]) .≈ [1.002509414234171, 1.002509414234171, 1.002509414234171])
-    hmin, hmax = FT(0), FT(1)
+    @test G.Re_Ha_BL_1D(Re, Ha, hmin, hmax) ≈ 1.002509414234171
+    @test G.Reynolds_BL_1D(Re, hmin, hmax) ≈ 1.0540925533894598
+    @test G.Hartmann_BL_1D(Ha, hmin, hmax) ≈ 1.002509414234171
+    @test G.RobertsBL1D(δ, hmax) ≈ FT(1000)
     @test G.β_Δh_big(hmin, hmax, 100, FT(0.02)) ≈ 1.0443565558255983
     @test G.β_Δh_both(hmin, hmax, 100, FT(0.001)) ≈ 1.0211975072167816
     @test G.β_Δh_small(hmin, hmax, 100, FT(0.001)) ≈ 1.0218301816802464
+
+    Δh = FT(0.1)
+    @test all(uniform_left(hmin, Δh, 3) .≈ [-0.3, -0.2, -0.1, 0.0])
+    @test all(uniform_right(hmin, Δh, 3) .≈ [0.0, 0.1, 0.2, 0.3])
 end
 
 @testset "Grid init" begin
