@@ -34,5 +34,6 @@ deploydocs(
     repo = "github.com/charleskawczynski/MOONS.jl.git",
     target = "build",
     push_preview = true,
+    devbranch = "main",
     forcepush = true,
 )
