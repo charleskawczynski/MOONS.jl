@@ -165,7 +165,7 @@ Note that this must be used in reverse for the lid driven
 cavity geometry for the 'front' and 'back' walls.
 
 !!! note
-    I have abused notation a bit to provide consistent notation
+    Notation has been abused a bit to provide consistent notation
     with the reference as well as generalize the returned grid
     so that it need not start at y=0.
 """
@@ -173,11 +173,11 @@ function transformation3(hmin::FT, hmax::FT, N::IT, yc::FT, τ::FT) where {FT, I
   a = FT(1); c = FT(2)
   Δh = (hmax - hmin)/FT(N)
   hnbar = [hmin+FT(i-1)*Δh for i in 1:N+1]
-  hnbar = (hnbar - hmin)/(hmax-hmin)
+  hnbar = (hnbar .- hmin) ./ (hmax-hmin)
   d = yc/(hmax-hmin); e = FT(exp(τ))
   B = a/(c*τ)*log((a+(e-a)*d)/(a+(a/e-a)*d))
-  hn = [d*(a+FT(sinh(τ*(hnbar(i)-B)))/FT(sinh(τ*B))) for i in 1:N+1]
-  hn .= hmin + (hmax - hmin).*hn
+  hn = [d*(a+FT(sinh(τ*(hnbar[i]-B)))/FT(sinh(τ*B))) for i in 1:N+1]
+  hn .= hmin .+ (hmax - hmin).*hn
   return hn
 end
 

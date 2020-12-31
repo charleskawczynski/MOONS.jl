@@ -15,6 +15,19 @@ T2_root_Δh_near_hmax(β, hmin::FT,hmax::FT,α::FT,N::IT,Δh::FT) where {FT,IT} 
 T2_root_Δh_near_hmin(β, hmin::FT,hmax::FT,α::FT,N::IT,Δh::FT) where {FT,IT} =
   T2_h_i(β,α,1,N) - T2_h_i(β,α,0,N) - Δh/(hmax-hmin)
 
+"""
+    β_Δh_small
+
+Compute `β` such that `N` grid points
+between `hmin` and `hmax` stretch so
+that the smallest `Δh` matches the one
+given.
+
+!!! warn
+    If `N` is small, `β->∞`, and the
+    given `Δh` may not be satisfied.
+    `N` can be increased to fix this.
+"""
 function β_Δh_small(hmin::FT, hmax::FT, N::IT, Δh::FT) where {FT, IT}
   tol = eps(FT)
   β_initial = FT(1) + tol # Initial guess
@@ -24,6 +37,19 @@ function β_Δh_small(hmin::FT, hmax::FT, N::IT, Δh::FT) where {FT, IT}
   return sol.root
 end
 
+"""
+    β_Δh_big
+
+Compute `β` such that `N` grid points
+between `hmin` and `hmax` stretch so
+that the largest `Δh` matches the one
+given.
+
+!!! warn
+    If `N` is small, `β->∞`, and the
+    given `Δh` may not be satisfied.
+    `N` can be increased to fix this.
+"""
 function β_Δh_big(hmin::FT, hmax::FT, N::IT, Δh::FT) where {FT, IT}
   tol = eps(FT)
   β_initial = FT(1) + tol # Initial guess
@@ -33,6 +59,19 @@ function β_Δh_big(hmin::FT, hmax::FT, N::IT, Δh::FT) where {FT, IT}
   return sol.root
 end
 
+"""
+    β_Δh_both
+
+Compute `β` such that `N` grid points
+between `hmin` and `hmax` stretch so
+that the smallest `Δh` matches the one
+given.
+
+!!! warn
+    If `N` is small, `β->∞`, and the
+    given `Δh` may not be satisfied.
+    `N` can be increased to fix this.
+"""
 function β_Δh_both(hmin::FT, hmax::FT, N::IT, Δh::FT) where {FT, IT}
   tol = eps(FT)
   β_initial = FT(1) + tol # Initial guess
