@@ -1,6 +1,6 @@
 #### Coordinates
 
-export Coordinates
+export Coordinates, coords
 export h_extreme, boundary_pts, over_points
 export DataLocation, Center1D, Vertex1D
 export CellBoundary, NodeBoundary
@@ -28,8 +28,6 @@ struct Coordinates1D{DL,FT,VFT,IT} <: CollocatedCoordinates{DL,FT}
   Δh::VFT
 end
 
-Base.length(c::CollocatedCoordinates) = c.s
-
 function Base.show(io::IO, c::CollocatedCoordinates)
   print(io, "\n")
   println(io, "  s     = ",c.s)
@@ -48,14 +46,10 @@ struct Coordinates{N, C}
   c::C
 end
 
-export coords
 coords(c::Coordinates, ::Center1D) = c.c
 coords(c::Coordinates, ::Vertex1D) = c.n
 
 include("extremum_funcs.jl")
-
-Base.length(c::Coordinates, ::Center1D) = c.c.s
-Base.length(c::Coordinates, ::Vertex1D) = c.n.s
 
 abstract type BoundaryPoints end
 

@@ -29,12 +29,12 @@ end
 RobertsBL(delta::FT, hmin::FT, hmax::FT) where FT = RobertsBL1D(delta, hmax-hmin)
 
 function Hartmann_BL_1D(Ha::FT, hmin::FT, hmax::FT) where FT
-  @assert Ha<eps(FT)
+  @assert Ha>eps(FT)
   return RobertsBL((hmax-hmin)/Ha, hmin, hmax)
 end
 
 function Reynolds_BL_1D(Re::FT, hmin::FT, hmax::FT) where FT
-  @assert Re<eps(FT)
+  @assert Re>eps(FT)
   β = RobertsBL((hmax-hmin)/sqrt(Re), hmin, hmax)
 end
 
