@@ -31,6 +31,18 @@ end
     @test ghost_dual(Max()) == (0, 1)
 end
 
+@testset "Stretch funcs" begin
+    FT = Float64
+    Re = FT(100)
+    Ha = FT(200)
+    @test all(G.ReynoldsBL(Re, FT[0, 0, 0], FT[1, 1, 1]) .≈ [1.0540925533894598, 1.0540925533894598, 1.0540925533894598])
+    @test all(G.Re_Ha_BL(Re, Ha, FT[0, 0, 0], FT[1, 1, 1]) .≈ [1.002509414234171, 1.002509414234171, 1.002509414234171])
+    hmin, hmax = FT(0), FT(1)
+    @test G.β_Δh_big(hmin, hmax, 100, FT(0.02)) ≈ 1.0443565558255983
+    @test G.β_Δh_both(hmin, hmax, 100, FT(0.001)) ≈ 1.0211975072167816
+    @test G.β_Δh_small(hmin, hmax, 100, FT(0.001)) ≈ 1.0218301816802464
+end
+
 @testset "Grid init" begin
   for FT in (Float32, Float64)
     a = FT(0.0)
@@ -40,6 +52,13 @@ end
     c1 = Coordinates(a,b,n; warpfun=Roberts_both, args=(β,))
     c2 = Coordinates(a,b,n; warpfun=Roberts_both, args=(β,))
     c3 = Coordinates(a,b,n; warpfun=Roberts_both, args=(β,))
+    grid = Grid((c1,c2,c3))
+
+    yc = FT(0.5)
+    τ = FT(10)
+    c1 = Coordinates(a,b,n; warpfun=cluster, args=(yc,τ))
+    c2 = Coordinates(a,b,n; warpfun=cluster, args=(yc,τ))
+    c3 = Coordinates(a,b,n; warpfun=cluster, args=(yc,τ))
     grid = Grid((c1,c2,c3))
 
     c1 = Coordinates(a,b,n; warpfun=Roberts_right, args=(β,))

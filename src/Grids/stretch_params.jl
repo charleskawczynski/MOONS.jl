@@ -30,18 +30,18 @@ RobertsBL(delta::FT, hmin::FT, hmax::FT) where FT = RobertsBL1D(delta, hmax-hmin
 
 function Hartmann_BL_1D(Ha::FT, hmin::FT, hmax::FT) where FT
   @assert Ha<eps(FT)
-  return robertsBL((hmax-hmin)/Ha, hmin, hmax)
+  return RobertsBL((hmax-hmin)/Ha, hmin, hmax)
 end
 
 function Reynolds_BL_1D(Re::FT, hmin::FT, hmax::FT) where FT
   @assert Re<eps(FT)
-  β = robertsBL((hmax-hmin)/sqrt(Re), hmin, hmax)
+  β = RobertsBL((hmax-hmin)/sqrt(Re), hmin, hmax)
 end
 
 function HartmannBL(Ha::FT, hmin::Vector{FT}, hmax::Vector{FT}) where FT
-  @assert Ha<eps(FT)
+  @assert Ha>eps(FT)
   @assert length(hmin)==length(hmax)
-  return [robertsBL((hmax[i]-hmin[i])/Ha, hmin[i],hmax[i]) for i in 1:3]
+  return [RobertsBL((hmax[i]-hmin[i])/Ha, hmin[i],hmax[i]) for i in 1:3]
 end
 
 function Re_Ha_BL_1D(Re::FT, Ha::FT, hmin::FT, hmax::FT) where FT
@@ -51,8 +51,8 @@ function Re_Ha_BL_1D(Re::FT, Ha::FT, hmin::FT, hmax::FT) where FT
 end
 
 function ReynoldsBL(Re::FT, hmin::Vector{FT}, hmax::Vector{FT}) where FT
-  @assert Re<eps(FT)
-  β = [robertsBL((hmax[i] - hmin[i])/sqrt(Re), hmin[i], hmax[i]) for i in 1:3]
+  @assert Re>eps(FT)
+  β = [RobertsBL((hmax[i] - hmin[i])/sqrt(Re), hmin[i], hmax[i]) for i in 1:3]
 end
 
 function Re_Ha_BL(Re::FT, Ha::FT, hmin::Vector{FT}, hmax::Vector{FT}) where FT
