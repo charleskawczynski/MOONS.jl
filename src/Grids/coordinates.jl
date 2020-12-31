@@ -126,7 +126,6 @@ function Coordinates(a::FT, b::FT, n::IT; warpfun::F=nothing, args=nothing) wher
     hn = warpfun(a, b, n+1, args...)
     pad!(hn)
   end
-
   Δhn = FT[hn[i+1]-hn[i] for i in 1:sn-1]
   cn = Coordinates1D{Vertex1D,FT,typeof(hn),typeof(sn)}(sn, hn, Δhn)
 
@@ -134,6 +133,10 @@ function Coordinates(a::FT, b::FT, n::IT; warpfun::F=nothing, args=nothing) wher
   hc = FT[hn[i]+Δhn[i]/2 for i in 1:sc]
   Δhc = FT[hc[i+1]-hc[i] for i in 1:sc-1]
   cc = Coordinates1D{Center1D,FT,typeof(hc),typeof(sc)}(sc, hc, Δhc)
+
+  if !(all(isfinite.(hn)) && all(isfinite.(hc)))
+    throw(ArgumentError("Coordinates are not finite."))
+  end
 
   return Coordinates(cn, cc)
 end
