@@ -27,7 +27,7 @@ function interp_simple!(face::CellFace{1}, cent::CellCenter, grid::Grid)
             for i in over_points(grid.c[1], Interior(), Vertex1D())
                 D = grid.c[1].interp.diag[i]
                 U = grid.c[1].interp.upper[i]
-                face[i, j, k] = D*cent[i, j, k] + U*cent[i+1, j, k]
+                face[i, j, k] = D*cent[i-1, j, k] + U*cent[i, j, k]
             end
         end
     end
@@ -74,7 +74,7 @@ function interp_simple!(corn::CellCorner, edge::CellEdge{1}, grid::Grid)
             for i in over_points(grid.c[1], Interior(), Vertex1D())
                 D = grid.c[1].interp.diag[i]
                 U = grid.c[1].interp.upper[i]
-                corn[i, j, k] = D*edge[i, j, k] + U*edge[i+1, j, k]
+                corn[i, j, k] = D*edge[i-1, j, k] + U*edge[i, j, k]
             end
         end
     end
@@ -145,7 +145,7 @@ function interp_simple!(edge::CellEdge{2}, face::CellFace{1}, grid::Grid)
             for i in over_points(grid.c[1], All(), Vertex1D())
                 D = grid.c[3].interp.diag[k]
                 U = grid.c[3].interp.upper[k]
-                edge[i, j, k] = D*face[i, j, k] + U*face[i, j, k+1]
+                edge[i, j, k] = D*face[i, j, k-1] + U*face[i, j, k]
             end
         end
     end

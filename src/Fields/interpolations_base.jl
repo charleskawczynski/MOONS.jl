@@ -24,7 +24,7 @@ function interp!(face::CellFace{dim}, cent::CellCenter, grid::Grid) where {dim}
     @inbounds for (Ipre, i, Ipost) in sweep(cent, dim, iR)
         D = grid.c[dim].interp.diag[i]
         U = grid.c[dim].interp.upper[i]
-        face[Ipre, i, Ipost] = D*cent[Ipre, i, Ipost] + U*cent[Ipre, i+1, Ipost]
+        face[Ipre, i, Ipost] = D*cent[Ipre, i-1, Ipost] + U*cent[Ipre, i, Ipost]
     end
     nothing
 end
@@ -38,7 +38,7 @@ function interp!(corn::CellCorner, edge::CellEdge{dim}, grid::Grid) where {dim}
     @inbounds for (Ipre, i, Ipost) in sweep(corn, dim, iR)
         D = grid.c[dim].interp.diag[i]
         U = grid.c[dim].interp.upper[i]
-        corn[Ipre, i, Ipost] = D*edge[Ipre, i, Ipost] + U*edge[Ipre, i+1, Ipost]
+        corn[Ipre, i, Ipost] = D*edge[Ipre, i-1, Ipost] + U*edge[Ipre, i, Ipost]
     end
     nothing
 end
@@ -72,7 +72,7 @@ function interp!(edge::CellEdge{edgedim}, face::CellFace{facedim}, grid::Grid) w
     @inbounds for (Ipre, i, Ipost) in sweep(edge, interp_dim, iR)
         D = grid.c[interp_dim].interp.diag[i]
         U = grid.c[interp_dim].interp.upper[i]
-        edge[Ipre, i, Ipost] = D*face[Ipre, i, Ipost] + U*face[Ipre, i+1, Ipost]
+        edge[Ipre, i, Ipost] = D*face[Ipre, i-1, Ipost] + U*face[Ipre, i, Ipost]
     end
     nothing
 end
