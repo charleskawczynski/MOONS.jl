@@ -126,3 +126,4 @@ include("interpolations.jl")
 end
 
 include("extrapolations.jl")
+include("discrete_ops.jl")

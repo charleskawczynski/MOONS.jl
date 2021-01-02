@@ -7,8 +7,10 @@ using ..Grids
 using Base.Broadcast: Broadcasted, BroadcastStyle, ArrayStyle
 
 export AbstractField, CellCenter, CellCorner, CellFace, CellEdge
-export CellFaces, CellEdges
+export CellFaces, CellEdges, CellCenters, CellCorners
+export dual_fields
 export midslice, midline
+export primary_along, dual_along
 export GridField
 
 abstract type FieldLocations end
@@ -95,6 +97,7 @@ struct CellCenter{A,FT,NDIMS} <: AbstractField{FT,NDIMS}
         new{typeof(data),FT,length(s)}(data)
     end
 end
+CellCenters(grid::Grid) = (CellCenter(grid),CellCenter(grid),CellCenter(grid))
 
 struct CellCorner{A,FT,NDIMS} <: AbstractField{FT,NDIMS}
     data::A
@@ -104,6 +107,7 @@ struct CellCorner{A,FT,NDIMS} <: AbstractField{FT,NDIMS}
         new{typeof(data),FT,length(s)}(data)
     end
 end
+CellCorners(grid::Grid) = (CellCorner(grid),CellCorner(grid),CellCorner(grid))
 
 struct CellFace{dir,A,FT,NDIMS} <: AbstractField{FT,NDIMS}
     data::A
@@ -158,8 +162,29 @@ get_dl(::CellFace, ::Val{N}) where {N} = get_dl(Primary(), Val(N))
 get_dl(::CellEdge, ::Val{N}) where {N} = get_dl(Dual(), Val(N))
 get_dl(f::AbstractField, dir::Int) = get_dl(f, Val(dir))
 
+primary_along(f::AbstractField) = (primary_along(f, 1),primary_along(f, 2),primary_along(f, 3))
+primary_along(f::AbstractField, dir::Int) = primary_along(f, Val(dir))
+primary_along(f::CellCenter, ::Val{dim}) where {dim} = Center1D()
+primary_along(f::CellCorner, ::Val{dim}) where {dim} = Vertex1D()
+primary_along(f::CellFace{dim}, ::Val{dim}) where {dim} = Vertex1D()
+primary_along(f::CellFace{fdim}, ::Val{dim}) where {dim,fdim} = Center1D()
+primary_along(f::CellEdge{dim}, ::Val{dim}) where {dim} = Center1D()
+primary_along(f::CellEdge{fdim}, ::Val{dim}) where {dim,fdim} = Vertex1D()
+
+dual_along(f::AbstractField) = (dual_along(f, 1),dual_along(f, 2),dual_along(f, 3))
+dual_along(f::AbstractField, dir::Int) = dual_along(f, Val(dir))
+dual_along(f::CellCenter, ::Val{dim}) where {dim} = Vertex1D()
+dual_along(f::CellCorner, ::Val{dim}) where {dim} = Center1D()
+dual_along(f::CellFace{dim}, ::Val{dim}) where {dim} = Center1D()
+dual_along(f::CellFace{fdim}, ::Val{dim}) where {dim,fdim} = Vertex1D()
+dual_along(f::CellEdge{dim}, ::Val{dim}) where {dim} = Vertex1D()
+dual_along(f::CellEdge{fdim}, ::Val{dim}) where {dim,fdim} = Center1D()
+
 space(grid::Grid, ::Center1D) = grid.cent
 space(grid::Grid, ::Vertex1D) = grid.corn
+
+dual_fields(grid::Grid, f::CellCenter) = CellFaces(grid)
+dual_fields(grid::Grid, f::CellCorner) = CellEdges(grid)
 
 function Base.iterate(gf::GridField{G,F}, state=1) where {G,F<:AbstractField}
     if state > length(gf)
@@ -184,5 +209,6 @@ end
 include("interpolations_base.jl")
 include("interpolations_md.jl")
 include("extrapolations.jl")
+include("discrete_ops.jl")
 
 end

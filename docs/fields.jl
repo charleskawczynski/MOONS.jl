@@ -52,3 +52,45 @@ plot(xc[1:4], midline(edge, 1)[1:4], label="edge (extrapolated)")
 plot!(xn[1:4], midline(corn, 1)[1:4], label="corn")
 savefig("extrap_v2c.svg")
 
+FT = Float64
+ax, bx = FT(0.0), FT(1.0)
+ay, by = FT(0.0), FT(2.0)
+n = 2 ^ 5
+g = Grid(
+    (Coordinates(ax,bx,n),
+     Coordinates(ay,by,n),
+     Coordinates(-FT(0.5),FT(0.5), 1))
+    )
+
+f = CellCorner(g)
+∇f = CellEdges(g)
+∇f_exact = CellEdges(g)
+
+@inbounds for local_grid in GridField(g,f)
+    @unpack ijk,x,y = local_grid
+    f[ijk] = sin(3*π*x)*sin(3*π*y)
+end
+@inbounds for local_grid in GridField(g,∇f_exact[1])
+    @unpack ijk,x,y = local_grid
+    ∇f_exact[1][ijk] = 3*π*cos(3*π*x)*sin(3*π*y)
+end
+@inbounds for local_grid in GridField(g,∇f_exact[2])
+    @unpack ijk,x,y = local_grid
+    ∇f_exact[2][ijk] = 3*π*sin(3*π*x)*cos(3*π*y)
+end
+∇!(∇f, f, g)
+
+@unpack xc, yc, zc, xn, yn, zn = all_coords(g)
+
+contourf(xn,yn, midslice(f, 3)', c = :viridis, xlabel="x", ylabel="y")
+savefig("f.svg")
+
+contourf(xc,yn, midslice(∇f[1], 3)', c = :viridis, xlabel="x", ylabel="y")
+savefig("∇f_1.svg")
+contourf(xn,yc, midslice(∇f[2], 3)', c = :viridis, xlabel="x", ylabel="y")
+savefig("∇f_2.svg")
+
+contourf(xc,yn, midslice(∇f_exact[1], 3)', c = :viridis, xlabel="x", ylabel="y")
+savefig("∇f_1_exact.svg")
+contourf(xn,yc, midslice(∇f_exact[2], 3)', c = :viridis, xlabel="x", ylabel="y")
+savefig("∇f_2_exact.svg")

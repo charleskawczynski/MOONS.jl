@@ -35,7 +35,7 @@ function Base.show(io::IO, c::CollocatedCoordinates)
   println(io, "  Δh    = ",c.Δh)
 end
 
-struct InterpMat{D,U}
+struct SparseMat{D,U}
   diag::D
   upper::U
 end
@@ -46,10 +46,11 @@ end
 Cell node (`n`) and center (`c`)
 1D coordinates.
 """
-struct Coordinates{N, C, I}
+struct Coordinates{N, C, I, D}
   n::N
   c::C
   interp::I
+  deriv::D
 end
 
 coords(c::Coordinates, ::Center1D) = c.c
@@ -146,12 +147,22 @@ function Coordinates(a::FT, b::FT, n::IT; warpfun::F=nothing, args=nothing) wher
     throw(ArgumentError("Coordinates are not finite."))
   end
 
-  interp = InterpMat(interp_diag(hn, hc, sc), interp_upper_diag(hn, hc, sc))
-  return Coordinates(cn, cc, interp)
+  interp = SparseMat(interp_diag(hn, hc, sc), interp_upper_diag(hn, hc, sc))
+  deriv = (
+    c2v=SparseMat(deriv_diag_C2V(Δhc, sc), deriv_upper_diag_C2V(Δhc, sc)),
+    v2c=SparseMat(deriv_diag_V2C(Δhn, sn), deriv_upper_diag_V2C(Δhn, sn)),
+    )
+  return Coordinates(cn, cc, interp, deriv)
 end
 
 interp_diag(hn, hc, sc) =
     [(hn[i+1] - hc[i])/(hc[i+1] - hc[i]) for i in 1:sc-1]
 
 interp_upper_diag(hn, hc, sc) = 1 .- interp_diag(hn, hc, sc)
+
+deriv_diag_C2V(Δh, sc) = [-1/Δh[i] for i in 1:sc-1]
+deriv_upper_diag_C2V(Δh, sc) = [1/Δh[i] for i in 1:sc-1]
+
+deriv_diag_V2C(Δh, sc) = [-1/Δh[i] for i in 1:sc-1]
+deriv_upper_diag_V2C(Δh, sc) = [1/Δh[i] for i in 1:sc-1]
 
