@@ -35,15 +35,21 @@ function Base.show(io::IO, c::CollocatedCoordinates)
   println(io, "  Δh    = ",c.Δh)
 end
 
+struct InterpMat{D,U}
+  diag::D
+  upper::U
+end
+
 """
     Coordinates
 
 Cell node (`n`) and center (`c`)
 1D coordinates.
 """
-struct Coordinates{N, C}
+struct Coordinates{N, C, I}
   n::N
   c::C
+  interp::I
 end
 
 coords(c::Coordinates, ::Center1D) = c.c
@@ -138,5 +144,12 @@ function Coordinates(a::FT, b::FT, n::IT; warpfun::F=nothing, args=nothing) wher
     throw(ArgumentError("Coordinates are not finite."))
   end
 
-  return Coordinates(cn, cc)
+  interp = InterpMat(interp_diag(hn, hc, sc), interp_upper_diag(hn, hc, sc))
+  return Coordinates(cn, cc, interp)
 end
+
+interp_diag(hn, hc, sc) =
+    [(hn[i+1] - hc[i])/(hc[i+1] - hc[i]) for i in 1:sc-1]
+
+interp_upper_diag(hn, hc, sc) = 1 .- interp_diag(hn, hc, sc)
+

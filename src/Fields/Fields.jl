@@ -1,6 +1,10 @@
 module Fields
 
+import LinearAlgebra
+using UnPack
 using ..Grids
+
+using Base.Broadcast: Broadcasted, BroadcastStyle, ArrayStyle
 
 export AbstractField, CellCenter, CellCorner, CellFace, CellEdge
 export midslice
@@ -34,57 +38,96 @@ get_dl(::Dual, dir::Val{2}) = (Vertex1D(),Center1D(),Vertex1D())
 get_dl(::Dual, dir::Val{3}) = (Vertex1D(),Vertex1D(),Center1D())
 get_dl(gt::GridType, dir::Int) = get_dl(gt, Val(dir))
 
-abstract type AbstractField end
+abstract type AbstractField{FT,NDIMS} <: AbstractArray{FT, NDIMS} end
 
 Base.size(f::AbstractField) = Base.size(f.data)
 Base.size(f::AbstractField, dim) = Base.size(f.data, dim)
 Base.length(f::AbstractField) = Base.length(f.data)
+Base.eltype(f::AbstractField) = Base.eltype(f.data)
+Base.ndims(::Type{T}) where {NDIMS,FT,T<:AbstractField{FT,NDIMS}} = NDIMS
 Base.iterate(f::AbstractField, state=1) =
     state > length(f) ? nothing : (f[state], state+1)
+Base.lastindex(f::AbstractField, dim) = size(f, dim)
 
+Base.copyto!(dest::Array, f::AbstractField) = copyto!(dest, f.data)
+Base.BroadcastStyle(::Type{<:AbstractField}) = ArrayStyle{AbstractField}()
+
+find_field(bc::Broadcasted) = find_field(bc.args)
+find_field(args::Tuple) = find_field(find_field(args[1]), Base.tail(args))
+find_field(x) = x
+find_field(a::AbstractField, rest) = a
+find_field(::Any, rest) = find_field(rest)
+
+Base.similar(bc::Broadcasted{ArrayStyle{AbstractField}}, ::Type{FT}) where {FT} =
+    similar(find_field(bc), FT)
+
+function Base.copyto!(dest::AbstractField, src::AbstractField)
+    copyto!(dest.data, src.data)
+    dest
+end
+
+transform_array(f::AbstractField) = f.data
+transform_array(x) = x
+
+@inline function Base.copyto!(dest::AbstractField, bc::Broadcasted{Nothing})
+    # check for the case a .= b, where b is an array
+    if bc.f === identity && bc.args isa Tuple{AbstractArray}
+        copyto!(dest.data, bc.args[1])
+    else
+        copyto!(dest.data, Broadcasted(bc.f, transform_array.(bc.args), bc.axes))
+    end
+    dest
+end
+
+
+LinearAlgebra.norm(f::AbstractField) = LinearAlgebra.norm(f.data)
 Base.@propagate_inbounds Base.getindex(f::AbstractField, key...) =
     Base.getindex(f.data, key...)
 Base.@propagate_inbounds Base.setindex!(f::AbstractField, v, key...) =
     Base.setindex!(f.data, v, key...)
 
-struct CellCenter{A} <: AbstractField
+struct CellCenter{A,FT,NDIMS} <: AbstractField{FT,NDIMS}
     data::A
     function CellCenter(grid::Grid{FT}) where {FT}
-        data = zeros(FT, size(grid, get_dl(Primary()))...)
-        new{typeof(data)}(data)
+        s = size(grid, get_dl(Primary()))
+        data = zeros(FT, s...)
+        new{typeof(data),FT,length(s)}(data)
     end
 end
 
-struct CellCorner{A} <: AbstractField
+struct CellCorner{A,FT,NDIMS} <: AbstractField{FT,NDIMS}
     data::A
     function CellCorner(grid::Grid{FT}) where {FT}
-        data = zeros(FT, size(grid, get_dl(Dual()))...)
-        new{typeof(data)}(data)
+        s = size(grid, get_dl(Dual()))
+        data = zeros(FT, s...)
+        new{typeof(data),FT,length(s)}(data)
     end
 end
 
-struct CellFace{A,dir} <: AbstractField
+struct CellFace{dir,A,FT,NDIMS} <: AbstractField{FT,NDIMS}
     data::A
     function CellFace(grid::Grid{FT}, dir::Int) where {FT}
         @assert 1 <= dir <= 3
-        data = zeros(FT, size(grid, get_dl(Primary(), dir))...)
-        new{typeof(data),dir}(data)
+        s = size(grid, get_dl(Primary(), dir))
+        data = zeros(FT, s...)
+        new{dir,typeof(data),FT,length(s)}(data)
     end
 end
 
-struct CellEdge{A,dir} <: AbstractField
+struct CellEdge{dir,A,FT,NDIMS} <: AbstractField{FT,NDIMS}
     data::A
     function CellEdge(grid::Grid{FT}, dir::Int) where {FT}
         @assert 1 <= dir <= 3
-        data = zeros(FT, size(grid, get_dl(Dual(), dir))...)
-        new{typeof(data),dir}(data)
+        s = size(grid, get_dl(Dual(), dir))
+        data = zeros(FT, s...)
+        new{dir,typeof(data),FT,length(s)}(data)
     end
 end
 
 direction(f::CellCenter) = nothing
 direction(f::CellCorner) = nothing
-direction(f::CellFace{A,dir}) where {A,dir} = dir
-direction(f::CellEdge{A,dir}) where {A,dir} = dir
+direction(f::CellFace{dir}) where {dir} = dir
+direction(f::CellEdge{dir}) where {dir} = dir
 
 midslice(f::AbstractField, dir::Int) = midslice(f, Val(dir))
 midslice(f::AbstractField, ::Val{1}) = f[round(Int,size(f, 1)/2),:,:]
@@ -123,5 +166,14 @@ function Base.iterate(gf::GridField{G,F}, state=1) where {G,F<:AbstractField}
     end
 end
 Base.length(gf::GridField) = length(gf.f)
+
+function sweep(A, dim, iR = 1:size(A, dim))
+    Rpre = CartesianIndices(size(A)[1:dim-1])
+    Rpost = CartesianIndices(size(A)[dim+1:end])
+    return Iterators.product(Rpre, iR, Rpost)
+end
+
+include("interpolations_base.jl")
+include("interpolations_md.jl")
 
 end
