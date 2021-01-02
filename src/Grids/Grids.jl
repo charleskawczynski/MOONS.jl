@@ -22,7 +22,8 @@ end
 function Grid(c::NTuple{N,T}) where {N,T}
     cent = CenterSpace(c)
     corn = VertexSpace(c)
-    Grid{eltype(c[1].c.h),T,N,typeof(cent), typeof(corn)}(c, cent, corn)
+    args = (eltype(c[1].c.h), T, N, typeof.((cent, corn))...)
+    Grid{args...}(c, cent, corn)
 end
 
 abstract type Dimension end
@@ -73,5 +74,7 @@ function Base.show(io::IO, g::Grid{FT,T,N}) where {FT,T,N}
   end
   println(io, "---------------------- end grid")
 end
+
+Base.length(grid::Grid) = grid.c[1].n.s*grid.c[2].n.s*grid.c[3].n.s
 
 end
