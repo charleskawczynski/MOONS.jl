@@ -74,10 +74,9 @@ end
         err[k] = norm(face .- face_exact) / length(face)
     end
     conv = convergence_rate(err, Δh)
-    # Stretching hurts convergence a bit, but it looks asymptotically fine.
-    @test conv[1] ≈ 1.2406940137980567
-    @test conv[2] ≈ 1.7576940930569753
-    @test conv[3] ≈ 2.1179630299792707
+    @test conv[1] ≈ 1.6467834910768682
+    @test conv[2] ≈ 2.63750140470393
+    @test conv[3] ≈ 3.031320955254459
 end
 
 @testset "Corner -> Edge" begin
@@ -103,7 +102,6 @@ end
         err[k] = norm(edge .- edge_exact) / length(edge)
     end
     conv = convergence_rate(err, Δh)
-    # Stretching hurts convergence a bit, but it looks asymptotically fine.
     @test conv[1] ≈ 2.026575204117072
     @test conv[2] ≈ 2.6180379005577397
     @test conv[3] ≈ 3.0183074193213058
@@ -134,10 +132,9 @@ end
         err[k] = norm(corn .- corn_exact) / length(corn)
     end
     conv = convergence_rate(err, Δh)
-    # Stretching hurts convergence a bit, but it looks asymptotically fine.
-    @test conv[1] ≈ 0.7931104756382147
-    @test conv[2] ≈ 1.6843393931975017
-    @test conv[3] ≈ 2.077577264944298
+    @test conv[1] ≈ 1.1991999529170272
+    @test conv[2] ≈ 2.5641467048444557
+    @test conv[3] ≈ 2.9909351902194867
 end
 
 @testset "Edge -> Face" begin
@@ -163,7 +160,6 @@ end
         err[k] = norm(face .- face_exact) / length(face)
     end
     conv = convergence_rate(err, Δh)
-    # Stretching hurts convergence a bit, but it looks asymptotically fine.
     @test conv[1] ≈ 2.2503669731969924
     @test conv[2] ≈ 2.6547152504874756
     @test conv[3] ≈ 3.038500301838792
@@ -194,9 +190,8 @@ end
         err[k] = norm(edge .- edge_exact) / length(edge)
     end
     conv = convergence_rate(err, Δh)
-    # Stretching hurts convergence a bit, but it looks asymptotically fine.
-    @test conv[1] ≈ 1.0169022447181355
-    @test conv[2] ≈ 1.7210167431272385
-    @test conv[3] ≈ 2.0977701474617843
+    @test conv[1] ≈ 1.4229917219969475
+    @test conv[2] ≈ 2.600824054774193
+    @test conv[3] ≈ 3.011128072736973
 end
 
