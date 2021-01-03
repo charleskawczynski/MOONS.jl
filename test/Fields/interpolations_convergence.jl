@@ -44,9 +44,9 @@ convergence_rate(err, Δh) =
         err[k] = norm(cent .- cent_exact) / length(cent)
     end
     conv = convergence_rate(err, Δh)
-    @test conv[1] ≈ 2.4741587422769133
-    @test conv[2] ≈ 2.691392600417213
-    @test conv[3] ≈ 3.0586931843562843
+    @test conv[1] ≈ 0.9049443448120211
+    @test conv[2] ≈ 2.55205758617018
+    @test conv[3] ≈ 2.992429087432938
 end
 
 @testset "Center -> Face" begin
@@ -74,9 +74,9 @@ end
         err[k] = norm(face .- face_exact) / length(face)
     end
     conv = convergence_rate(err, Δh)
-    @test conv[1] ≈ 1.5013116390496155
-    @test conv[2] ≈ 2.6352668598888336
-    @test conv[3] ≈ 3.0347602551682327
+    @test conv[1] ≈ 1.8334675036878896
+    @test conv[2] ≈ 2.521189589590259
+    @test conv[3] ≈ 2.9686936734418015
 end
 
 @testset "Corner -> Edge" begin
@@ -102,9 +102,9 @@ end
         err[k] = norm(edge .- edge_exact) / length(edge)
     end
     conv = convergence_rate(err, Δh)
-    @test conv[1] ≈ 2.026575204117072
-    @test conv[2] ≈ 2.6180379005577397
-    @test conv[3] ≈ 3.0183074193213058
+    @test conv[1] ≈ 1.2685430731433063
+    @test conv[2] ≈ 2.482553166205038
+    @test conv[3] ≈ 2.9528060057161647
 end
 
 @testset "Edge -> Corner" begin
@@ -132,9 +132,9 @@ end
         err[k] = norm(corn .- corn_exact) / length(corn)
     end
     conv = convergence_rate(err, Δh)
-    @test conv[1] ≈ 1.0537281008897734
-    @test conv[2] ≈ 2.5619121600293595
-    @test conv[3] ≈ 2.9943744901332607
+    @test conv[1] ≈ 2.1970662320191745
+    @test conv[2] ≈ 2.4516851696251174
+    @test conv[3] ≈ 2.9290705917250293
 end
 
 @testset "Edge -> Face" begin
@@ -160,9 +160,9 @@ end
         err[k] = norm(face .- face_exact) / length(face)
     end
     conv = convergence_rate(err, Δh)
-    @test conv[1] ≈ 2.2503669731969924
-    @test conv[2] ≈ 2.6547152504874756
-    @test conv[3] ≈ 3.038500301838792
+    @test conv[1] ≈ 1.0867437089776637
+    @test conv[2] ≈ 2.5173053761876085
+    @test conv[3] ≈ 2.972617546574552
 end
 
 @testset "Face -> Edge" begin
@@ -190,8 +190,8 @@ end
         err[k] = norm(edge .- edge_exact) / length(edge)
     end
     conv = convergence_rate(err, Δh)
-    @test conv[1] ≈ 1.2775198699696946
-    @test conv[2] ≈ 2.5985895099590968
-    @test conv[3] ≈ 3.0145673726507467
+    @test conv[1] ≈ 2.0152668678535317
+    @test conv[2] ≈ 2.4864373796076884
+    @test conv[3] ≈ 2.9488821325834156
 end
 

@@ -125,18 +125,20 @@ end
 
 function Coordinates(a::FT, b::FT, n::IT; warpfun::F=nothing, args=nothing) where {FT, IT<:Integer, F}
   sn = n+3
-  hn = uniform(a,b,n)
-  pad!(hn)
 
   if !(warpfun==nothing)
-    hn = warpfun(a, b, n+1, args...)
-    pad!(hn)
+    hn = warpfun(a, b, n, args...)
+  else
+    hn = uniform(a,b,n)
   end
+  pad!(hn)
+  @assert length(hn) == n+3
   Δhn = FT[hn[i+1]-hn[i] for i in 1:sn-1]
   cn = Coordinates1D{Vertex1D,FT,typeof(hn),typeof(sn)}(sn, hn, Δhn)
 
   sc = n+2
   hc = FT[hn[i]+Δhn[i]/2 for i in 1:sc]
+  @assert length(hc) == n+2
   Δhc = FT[hc[i+1]-hc[i] for i in 1:sc-1]
   cc = Coordinates1D{Center1D,FT,typeof(hc),typeof(sc)}(sc, hc, Δhc)
 
