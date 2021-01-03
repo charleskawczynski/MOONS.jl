@@ -20,10 +20,10 @@ function interp!(cent::CellCenter, face::CellFace{dim}, grid::Grid) where {dim}
 end
 
 function interp!(face::CellFace{dim}, cent::CellCenter, grid::Grid) where {dim}
-    iR = over_points(grid.c[dim], Interior(), Vertex1D())
+    iR = over_points(grid.c[dim], Boundary(), Vertex1D())
     @inbounds for (Ipre, i, Ipost) in sweep(cent, dim, iR)
-        D = grid.c[dim].interp.diag[i]
-        U = grid.c[dim].interp.upper[i]
+        D = grid.c[dim].interp.diag[i-1]
+        U = grid.c[dim].interp.upper[i-1]
         face[Ipre, i, Ipost] = D*cent[Ipre, i-1, Ipost] + U*cent[Ipre, i, Ipost]
     end
     nothing
@@ -34,10 +34,10 @@ end
 #####
 
 function interp!(corn::CellCorner, edge::CellEdge{dim}, grid::Grid) where {dim}
-    iR = over_points(grid.c[dim], Interior(), Vertex1D())
+    iR = over_points(grid.c[dim], Boundary(), Vertex1D())
     @inbounds for (Ipre, i, Ipost) in sweep(corn, dim, iR)
-        D = grid.c[dim].interp.diag[i]
-        U = grid.c[dim].interp.upper[i]
+        D = grid.c[dim].interp.diag[i-1]
+        U = grid.c[dim].interp.upper[i-1]
         corn[Ipre, i, Ipost] = D*edge[Ipre, i-1, Ipost] + U*edge[Ipre, i, Ipost]
     end
     nothing
@@ -68,10 +68,10 @@ end
 
 function interp!(edge::CellEdge{edgedim}, face::CellFace{facedim}, grid::Grid) where {facedim,edgedim}
     interp_dim = orthog(facedim, edgedim)
-    iR = over_points(grid.c[interp_dim], Interior(), Vertex1D())
+    iR = over_points(grid.c[interp_dim], Boundary(), Vertex1D())
     @inbounds for (Ipre, i, Ipost) in sweep(edge, interp_dim, iR)
-        D = grid.c[interp_dim].interp.diag[i]
-        U = grid.c[interp_dim].interp.upper[i]
+        D = grid.c[interp_dim].interp.diag[i-1]
+        U = grid.c[interp_dim].interp.upper[i-1]
         edge[Ipre, i, Ipost] = D*face[Ipre, i-1, Ipost] + U*face[Ipre, i, Ipost]
     end
     nothing
