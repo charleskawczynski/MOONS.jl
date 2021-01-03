@@ -1,4 +1,5 @@
 using Test
+using UnPack
 using MOONS.Grids
 const G = Grids
 
@@ -94,6 +95,13 @@ end
     grid = Grid((c1,c2,c3))
     sprint(show, grid)
     # FT==Float64 && @show grid
+    @unpack xn, yn, zn, xc, yc, zc = all_coords(grid)
+    @test xn == grid.c[1].n.h
+    @test yn == grid.c[2].n.h
+    @test zn == grid.c[3].n.h
+    @test xc == grid.c[1].c.h
+    @test yc == grid.c[2].c.h
+    @test zc == grid.c[3].c.h
 
     # Test failures
     if FT === Float32

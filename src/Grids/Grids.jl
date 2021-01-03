@@ -77,4 +77,14 @@ end
 
 Base.length(grid::Grid) = grid.c[1].n.s*grid.c[2].n.s*grid.c[3].n.s
 
+export all_coords
+function all_coords(grid)
+    return (;xn = coords(grid.c[1], Vertex1D()).h,
+             yn = coords(grid.c[2], Vertex1D()).h,
+             zn = coords(grid.c[3], Vertex1D()).h,
+             xc = coords(grid.c[1], Center1D()).h,
+             yc = coords(grid.c[2], Center1D()).h,
+             zc = coords(grid.c[3], Center1D()).h)
+end
+
 end
