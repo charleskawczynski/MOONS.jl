@@ -58,6 +58,20 @@ end
 
 @testset "Grid init" begin
   for FT in (Float32, Float64)
+
+    a = FT(0.0)
+    b = FT(1.0)
+    n = 10
+    c = Coordinates(a,b,n)
+    @test length(c.c.h) == c.c.s
+    @test length(c.n.h) == c.n.s
+    @test c.n.h[1] < a
+    @test c.n.h[end] > b
+    @test c.n.h[2] ≈ a
+    @test c.n.h[end-1] ≈ b
+    @test c.c.h[1] < a
+    @test c.c.h[end] > b
+
     a = FT(0.0)
     b = FT(1.0)
     n = 10
@@ -105,7 +119,15 @@ end
     β = FT(1.1)
     c = Coordinates(a,b,n; warpfun=Roberts_both, args=(β,))
     β = G.β_Δh_small(a, b, n, c.n.Δh[1])
-    @test β ≈ 1.1036862256343674
+    @test β ≈ 1.1284008533596548
+    @test length(c.c.h) == c.c.s
+    @test length(c.n.h) == c.n.s
+    @test c.n.h[1] < a
+    @test c.n.h[end] > b
+    @test c.n.h[2] ≈ a
+    @test c.n.h[end-1] ≈ b
+    @test c.c.h[1] < a
+    @test c.c.h[end] > b
   end
 end
 
