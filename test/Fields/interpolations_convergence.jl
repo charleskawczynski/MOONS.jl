@@ -74,9 +74,9 @@ end
         err[k] = norm(face .- face_exact) / length(face)
     end
     conv = convergence_rate(err, Δh)
-    @test conv[1] ≈ 1.6467834910768682
-    @test conv[2] ≈ 2.63750140470393
-    @test conv[3] ≈ 3.031320955254459
+    @test conv[1] ≈ 1.5013116390496155
+    @test conv[2] ≈ 2.6352668598888336
+    @test conv[3] ≈ 3.0347602551682327
 end
 
 @testset "Corner -> Edge" begin
@@ -132,9 +132,9 @@ end
         err[k] = norm(corn .- corn_exact) / length(corn)
     end
     conv = convergence_rate(err, Δh)
-    @test conv[1] ≈ 1.1991999529170272
-    @test conv[2] ≈ 2.5641467048444557
-    @test conv[3] ≈ 2.9909351902194867
+    @test conv[1] ≈ 1.0537281008897734
+    @test conv[2] ≈ 2.5619121600293595
+    @test conv[3] ≈ 2.9943744901332607
 end
 
 @testset "Edge -> Face" begin
@@ -190,8 +190,8 @@ end
         err[k] = norm(edge .- edge_exact) / length(edge)
     end
     conv = convergence_rate(err, Δh)
-    @test conv[1] ≈ 1.4229917219969475
-    @test conv[2] ≈ 2.600824054774193
-    @test conv[3] ≈ 3.011128072736973
+    @test conv[1] ≈ 1.2775198699696946
+    @test conv[2] ≈ 2.5985895099590968
+    @test conv[3] ≈ 3.0145673726507467
 end
 
