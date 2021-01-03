@@ -7,7 +7,8 @@ using ..Grids
 using Base.Broadcast: Broadcasted, BroadcastStyle, ArrayStyle
 
 export AbstractField, CellCenter, CellCorner, CellFace, CellEdge
-export midslice
+export CellFaces, CellEdges
+export midslice, midline
 export GridField
 
 abstract type FieldLocations end
@@ -113,6 +114,7 @@ struct CellFace{dir,A,FT,NDIMS} <: AbstractField{FT,NDIMS}
         new{dir,typeof(data),FT,length(s)}(data)
     end
 end
+CellFaces(grid::Grid) = (CellFace(grid, 1),CellFace(grid, 2),CellFace(grid, 3))
 
 struct CellEdge{dir,A,FT,NDIMS} <: AbstractField{FT,NDIMS}
     data::A
@@ -123,16 +125,22 @@ struct CellEdge{dir,A,FT,NDIMS} <: AbstractField{FT,NDIMS}
         new{dir,typeof(data),FT,length(s)}(data)
     end
 end
+CellEdges(grid::Grid) = (CellEdge(grid, 1),CellEdge(grid, 2),CellEdge(grid, 3))
 
 direction(f::CellCenter) = nothing
 direction(f::CellCorner) = nothing
 direction(f::CellFace{dir}) where {dir} = dir
 direction(f::CellEdge{dir}) where {dir} = dir
 
-midslice(f::AbstractField, dir::Int) = midslice(f, Val(dir))
-midslice(f::AbstractField, ::Val{1}) = f[round(Int,size(f, 1)/2),:,:]
-midslice(f::AbstractField, ::Val{2}) = f[:,round(Int,size(f, 2)/2),:]
-midslice(f::AbstractField, ::Val{3}) = f[:,:,round(Int,size(f, 2)/2)]
+midslice(f, dir::Int) = midslice(f, Val(dir))
+midslice(f, ::Val{1}) = f[round(Int,size(f, 1)/2),:,:]
+midslice(f, ::Val{2}) = f[:,round(Int,size(f, 2)/2),:]
+midslice(f, ::Val{3}) = f[:,:,round(Int,size(f, 3)/2)]
+
+midline(f, dir::Int) = midline(f, Val(dir))
+midline(f, ::Val{1}) = f[:,round(Int,size(f, 2)/2),round(Int,size(f, 3)/2)]
+midline(f, ::Val{2}) = f[round(Int,size(f, 1)/2),:,round(Int,size(f, 3)/2)]
+midline(f, ::Val{3}) = f[round(Int,size(f, 1)/2),round(Int,size(f, 2)/2),:]
 
 struct GridField{G,F,CI}
     grid::G
@@ -175,5 +183,6 @@ end
 
 include("interpolations_base.jl")
 include("interpolations_md.jl")
+include("extrapolations.jl")
 
 end

@@ -125,32 +125,4 @@ include("interpolations.jl")
     include("interpolations_convergence.jl")
 end
 
-@testset "Interpolations - nested / non-base interps" begin
-    FT = Float64
-    n, a, b, β = 10, FT(0.0), FT(1.0), FT(1.01)
-    grid = Cube(a, b, n; warpfun=Roberts_both, args=(β,))
-
-    edge = (CellEdge(grid, 1), CellEdge(grid, 2), CellEdge(grid, 3))
-    face = (CellFace(grid, 1), CellFace(grid, 2), CellFace(grid, 3))
-    cent = CellCenter(grid)
-    corn = CellCorner(grid)
-    @inbounds for local_grid in GridField(grid, cent)
-        @unpack ijk,x,y,z = local_grid
-        cent[ijk] = sin(3*π*x)* sin(3*π*y)* sin(3*π*z)
-    end
-
-    # Just making sure these are callable:
-    interp!(face[1], edge[1], grid)
-    interp!(edge[1], face[1], grid)
-
-    interp!(cent, edge[1], grid)
-    interp!(edge[1], cent, grid)
-
-    interp!(corn, face[1], grid)
-    interp!(face[1], corn, grid)
-
-    interp!(cent, corn, grid)
-    interp!(corn, cent, grid)
-
-end
-
+include("extrapolations.jl")
