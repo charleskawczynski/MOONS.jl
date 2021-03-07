@@ -1,6 +1,7 @@
 ##### Extrapolations
 
 export extrap!
+export pre_post_colons
 
 function extrap! end
 
@@ -16,6 +17,12 @@ pre_post_colons(f, dim) = (;
 """ Simple linear extrapolation `f_g = 2f_b - f_i` """
 extrap!(f::AbstractField, grid::Grid, dir::Int) =
     extrap!(f, grid, Val(dir))
+
+function extrap!(f::AbstractField, grid::Grid)
+    extrap!(f, grid, 1)
+    extrap!(f, grid, 2)
+    extrap!(f, grid, 3)
+end
 
 function extrap!(f::AbstractField, grid::Grid, ::Val{dim}) where {dim}
     @unpack Ipre, Ipost = pre_post_colons(f, dim)

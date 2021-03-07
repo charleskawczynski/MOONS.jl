@@ -189,12 +189,6 @@ end
     @test conv[3] ≈ 2.9549859273624386
 end
 
-function assign!(f, val, ::Ghost)
-    f[1,:,:] .= val; f[end,:,:] .= val
-    f[:,1,:] .= val; f[:,end,:] .= val
-    f[:,:,1] .= val; f[:,:,end] .= val
-end
-
 function ∇²_simple!(∇²f::T, f::T, grid::Grid) where {T<:AbstractField}
     ∇f = dual_fields(grid, f)
     ∇²f_x = deepcopy(f)

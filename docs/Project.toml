@@ -1,5 +1,6 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+FFTW = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
 MOONS = "d8e8e26a-7208-48f2-980c-13e60723422e"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 UnPack = "3a884ed6-31ef-47d7-9d2a-63182c4928ed"
