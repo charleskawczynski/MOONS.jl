@@ -27,3 +27,7 @@ Grids.Min
 ```@docs
 Fields.extrap!
 ```
+
+```@docs
+MOONS.FFTs
+```

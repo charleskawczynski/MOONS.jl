@@ -9,7 +9,7 @@ using Base.Broadcast: Broadcasted, BroadcastStyle, ArrayStyle
 export AbstractField, CellCenter, CellCorner, CellFace, CellEdge
 export CellFaces, CellEdges, CellCenters, CellCorners
 export dual_fields
-export midslice, midline
+export average, midslice, midline
 export primary_along, dual_along
 export GridField
 
@@ -141,6 +141,11 @@ midslice(f, ::Val{1}) = f[round(Int,size(f, 1)/2),:,:]
 midslice(f, ::Val{2}) = f[:,round(Int,size(f, 2)/2),:]
 midslice(f, ::Val{3}) = f[:,:,round(Int,size(f, 3)/2)]
 
+average(f, dir::Int) = average(f, Val(dir))
+average(f, ::Val{1}) = dropdims(sum(f; dims=1), dims=1) ./ size(f, 1)
+average(f, ::Val{2}) = dropdims(sum(f; dims=2), dims=2) ./ size(f, 2)
+average(f, ::Val{3}) = dropdims(sum(f; dims=3), dims=3) ./ size(f, 3)
+
 midline(f, dir::Int) = midline(f, Val(dir))
 midline(f, ::Val{1}) = f[:,round(Int,size(f, 2)/2),round(Int,size(f, 3)/2)]
 midline(f, ::Val{2}) = f[round(Int,size(f, 1)/2),:,round(Int,size(f, 3)/2)]
@@ -204,6 +209,14 @@ function sweep(A, dim, iR = 1:size(A, dim))
     Rpre = CartesianIndices(size(A)[1:dim-1])
     Rpost = CartesianIndices(size(A)[dim+1:end])
     return Iterators.product(Rpre, iR, Rpost)
+end
+
+# TODO: improve implementation
+export assign!
+function assign!(f::AbstractField, val, ::Ghost)
+    f[1,:,:] .= val; f[end,:,:] .= val
+    f[:,1,:] .= val; f[:,end,:] .= val
+    f[:,:,1] .= val; f[:,:,end] .= val
 end
 
 include("interpolations_base.jl")

@@ -28,6 +28,7 @@ makedocs(
         "DevDocs" => [
             "Grids" => "DevDocs/Grids.md",
             "Fields" => "DevDocs/Fields.md",
+            "Poisson example" => "DevDocs/poisson_fft.md",
         ],
         "API" => "api.md",
     ],

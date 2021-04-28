@@ -3,6 +3,7 @@ using Test
 for submodule in [
                   "Grids",
                   "Fields",
+                  "FFTs",
                  ]
 
   println("Testing $submodule")
